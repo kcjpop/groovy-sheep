@@ -43,7 +43,7 @@ _sheepGraphClass =function() {
 
 	};	//end init
 
-	this.createTreeCrafty = function(x,y){
+	this.createTreeCrafty = function(treeid,x,y){
 
 		var tree =  Crafty.e();
 		tree.addComponent("2D, Canvas, Color");

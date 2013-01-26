@@ -20,22 +20,15 @@ _sheepGraphClass =function() {
 
 	}
 
-	this.redraw = function (sheep,fruit,wolves) {
+	this.redraw = function (sheep, fruit, wolves) {
 
 		//redraw sheep 
-
 
 		//redraw fruit
 
 		//redraw wolves
 
-
 		//redraw trees from the map
-
-
-
-
-
 
 	} //end redraw
 
