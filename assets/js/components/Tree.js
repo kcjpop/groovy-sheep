@@ -15,6 +15,7 @@ Crafty.c('Tree', {
 			.attr({x:_x, y:_y})
 			.animate('TreeGrowth', 0, 0, 14)
 			.animate('TreeGrowth', 500, -1)
+			.attr({x: 600, y: 300})
 			.bind("Click", function(e){
 				this.flip("X");
 				var that = this;

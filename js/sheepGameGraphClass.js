@@ -3,7 +3,8 @@
 _sheepGraphClass = function() {
 
 	var cc = this;
-	cc.sprites ={};
+	cc.sprites = {};
+	cc.treeIds = [];
 	//Call sound functions from GraphicClass as well
 
 	//each wolf,sheep and fruit has a gobjID that they can be accessed with
@@ -26,71 +27,107 @@ _sheepGraphClass = function() {
 		// We'll make some scenes
 		Crafty.scene('Game', function() {
 			// Create a new map and start the game
-			/*Crafty.e('Map');
-			 Crafty.e('Tree').createTree();
-			 Crafty.e('Sheep').create().walk();
-			 */
+			cc.createTreeCrafty(treeID, 700, 59);
+			//cc.createTreeCrafty(2, 200, 209);
+			//cc.createTreeCrafty(3, 400, 409);
 
-			Crafty.e(parent.createTreeCrafty(treeID, 50, 59));
-			//setTimeout(
-				//parent.deleteTreeCrafty(1), 
-			//1000);
+			//setTimeout(function(){cc.deleteTreeCrafty(1)}, 2000);
 		});
 		//scenes
 
 		// Start the game :Ds
 		Crafty.scene('Game');
-		
-	
+
 		return;
-		
+
 	};
 	//end init
 
-	this.deleteTreeCrafty = function (treeID) {
-		//var tree = this.sprites[treeID];
-		//tree.destroy();
-		
+	this.deleteTreeCrafty = function(treeID) {
+		var tree = this.sprites[treeID];
+		tree.destroy();
 	}
-	
+
 	this.createTreeCrafty = function(treeID, _x, _y) {
-		//Crafty.e('Tree').create(50,50);
-		
-		/*var tree = Crafty.e();
-		tree.addComponent("2D, Canvas, Color");
-		tree.color("white").attr({
-			w : 50,
-			h : 50,
-			x : 150
-		});
-		tree.sprite(x, y, "assets/img/tree.png", {
+		var id = treeID;
+		cc.treeIds.push(id);
+		Crafty.sprite(256, 235, "assets/img/tree.png", {
 			gfxTree : [0, 0]
-		});*/
-		
-		 Crafty.sprite(271, 249, "assets/img/tree.png", {
-    		gfxTree: [0,0]
 		});
-		
-		//this.sprites[treeID].attr({x:_x, y:_y});
-		
-		//return this.sprites[treeID];
-		
-		//Crafty.e('2D, Canvas, DOM, SpriteAnimation, gfxTree').attr({x:0, y:0});
-		this.sprites[treeID] = Crafty.e("2D, DOM, SpriteAnimation, Mouse, gfxTree")
-			.attr({x:_x, y:_y})
-			.animate('TreeGrowth', 0, 0, 14)
-			.animate('TreeGrowth', 500, -1)
-			.bind("Click", function(e){
-				this.flip("X");
-				var that = this;
-				setTimeout(function(){
-					 that.unflip("X");
-				},500);
-			});
-			
+
+		cc.sprites[treeID] = Crafty.e("2D, DOM, SpriteAnimation, Mouse, gfxTree").attr({
+			x : _x,
+			y : _y
+		}).animate('TreeGrowth', 0, 3, 14).animate('TreeGrowth', 500, -1).bind("Click", function(e) {
+			this.flip("X");
+			var that = this;
+			setTimeout(function() {
+				that.unflip("X");
+			}, 500);
+			cc.createFruitCrafty(1, treeID, _x + 50, _y + 50);
+			//this.destroy();
+			/*for(var i = 0;i<cc.treeIds.length;i++){
+			 if(cc.treeIds[i]!=id){
+			 cc.sprites[cc.treeIds[i]].destroy();
+			 cc.treeIds.splice(cc.treeIds.indexOf(cc.treeIds[i]),1);
+			 break;
+			 }
+			 }*/
+		});
+
 		return this;
 
 	};
+
+	this.createSheepCrafty = function(sheepID, _x, _y) {
+		var obj = Crafty.e('gfxTree, 2D, Canvas, Fourway,SpriteAnimation, Tween, Collision, Fourway, gfxSheep')
+		.bind('Click', clickHandler)
+		.animate('SheepWalking', 0, 0, 7)
+		.animate('SheepWalking', 15, -1).attr({
+			x : 0,
+			y : 390
+		});
+		
+		obj.collision();
+		var that = this;
+		obj.onHit("gfxTree", function(target) {
+			that.obj.flip("X");
+			that.obj.tween({
+				x : 0,
+				y : 400,
+				alpha : 1.0
+			}, 250).bind('TweenEnd', function() {
+				this.unflip("X");
+				this.tween({
+					x : 600,
+					y : 400,
+					alpha : 1.0
+				}, 250);
+			});
+			//that.obj.destroy();
+		});
+	}
+
+	this.createFruitCrafty = function(fruitID, treeID, _x, _y) {
+		Crafty.sprite(32, "assets/img/apple.png", {
+			gfxFruit : [0, 0]
+		});
+
+		Crafty.e("2D, DOM, Mouse, Tween, gfxFruit").attr({
+			x : _x,
+			y : _y
+		}).bind("Click", function(e) {
+			this.flip("X");
+			var that = this;
+			setTimeout(function() {
+				that.unflip("X");
+			}, 500);
+		}).tween({
+			x : cc.sprites[treeID].x + 50,
+			y : cc.sprites[treeID].y + 240,
+			alpha : 1
+		}, 100);
+	}
 	//end create tree
 
 	this.prime = function(map) {
