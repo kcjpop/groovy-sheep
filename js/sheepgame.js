@@ -33,6 +33,16 @@ _sheepgame = function () {
 
 		//locate trees in map and put them into this.trees
 
+
+		//create the graph class with crafy
+
+		this.graphClass = new _sheepGraphClass();
+
+		//init the graph class
+		
+		this.graphClass.init();
+
+
 	}	//end of init
 
 	this.mainloop = function () {
