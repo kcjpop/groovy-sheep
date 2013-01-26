@@ -8,9 +8,12 @@ _sheepGraphClass = function() {
 	//Call sound functions from GraphicClass as well
 
 	//each wolf,sheep and fruit has a gobjID that they can be accessed with
-	this.init = function() {
+	this.init = function(map) {
 
-		var parent = this;
+		var parent = this,
+			treeID = 1,
+			bushID = 1,
+			i, j, m, n, coord;
 		//inits crafty
 		this.canvas = window.RainbowSheep || {};
 
@@ -22,15 +25,31 @@ _sheepGraphClass = function() {
 		Crafty.init(this.canvas.cfg.CANVAS_WIDTH, this.canvas.cfg.CANVAS_HEIGHT);
 		Crafty.background('url(assets/img/grid.png)');
 
-		var treeID = 1;
-
 		// We'll make some scenes
 		Crafty.scene('Game', function() {
 			// Create a new map and start the game
-			cc.createTreeCrafty(treeID, 700, 59);
+			for(i = 0, n = map.length; i < n; i++) {
+				for(j = 0, m = map[i].length; j < m; j++) {
+					// Create a bush
+					if(map[i][j] === 1) {
+						bushID++;
+					}
+
+					// Create a tree
+					if(map[i][j] === 2) {
+						coord = cc.convertToPixel(i, j);
+						cc.createTreeCrafty({
+							treeID: treeID++,
+							_x: coord.x,
+							_y: coord.y
+						});
+					}
+				}
+			}
+			// cc.createTreeCrafty(treeID, 700, 59);
 			//cc.createTreeCrafty(2, 200, 209);
 			//cc.createTreeCrafty(3, 400, 409);
-			cc.createSheepCrafty(1, 0, 240);
+			// cc.createSheepCrafty(1, 0, 240);
 			//setTimeout(function(){cc.deleteTreeCrafty(1)}, 2000);
 		});
 		//scenes
@@ -42,29 +61,33 @@ _sheepGraphClass = function() {
 
 	};
 	//end init
+	
+	this.convertToPixel = function(i, j) {
+		return {x: j * 64, y: i * 64};
+	};
 
 	this.deleteTreeCrafty = function(treeID) {
 		var tree = this.sprites[treeID];
 		tree.destroy();
-	}
+	};
 
-	this.createTreeCrafty = function(treeID, _x, _y) {
-		var id = treeID;
+	this.createTreeCrafty = function(data) {
+		var id = data.treeID;
 		cc.treeIds.push(id);
 		Crafty.sprite(256, 235, "assets/img/tree.png", {
 			gfxTree : [0, 0]
 		});
 
-		cc.sprites[treeID] = Crafty.e("2D, DOM, SpriteAnimation, Mouse, gfxTree").attr({
-			x : _x,
-			y : _y
+		cc.sprites[data.treeID] = Crafty.e("2D, DOM, SpriteAnimation, Mouse, gfxTree").attr({
+			x : data._x,
+			y : data._y
 		}).animate('TreeGrowth', 0, 3, 14).animate('TreeGrowth', 500, -1).bind("Click", function(e) {
 			this.flip("X");
 			var that = this;
 			setTimeout(function() {
 				that.unflip("X");
 			}, 500);
-			cc.createFruitCrafty(1, treeID, _x + 50, _y + 50);
+			cc.createFruitCrafty(1, data.treeID, data._x + 50, data._y + 50);
 			//this.destroy();
 			/*for(var i = 0;i<cc.treeIds.length;i++){
 			 if(cc.treeIds[i]!=id){
