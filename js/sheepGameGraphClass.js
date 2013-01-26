@@ -25,7 +25,8 @@ _sheepGraphClass = function() {
 		};
 
 		Crafty.init(this.canvas.cfg.CANVAS_WIDTH, this.canvas.cfg.CANVAS_HEIGHT);
-		Crafty.background('url(assets/img/grid.png)');
+		// Crafty.background('url(assets/img/grid.png)');
+		Crafty.background('url(assets/img/bg.jpg)');
 
 		// We'll make some scenes
 		Crafty.scene('Game', function() {
