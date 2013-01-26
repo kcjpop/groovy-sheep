@@ -5,7 +5,7 @@ class graphClass {
 	//each wolf,sheep and fruit has a gobjID that they can be accessed with
 
 
-	var prime = function (map){
+	function prime = function (map){
 
 		this.map = map;
 
@@ -15,7 +15,7 @@ class graphClass {
 
 	}
 
-	var redraw = function (sheep,fruit,wolves) {
+	function redraw = function (sheep,fruit,wolves) {
 
 		//redraw sheep 
 
@@ -35,14 +35,14 @@ class graphClass {
 	}
 
 
-	var removeObject = function (o) {
+	function removeObject = function (o) {
 
 		var oID = o.gobjID;
 
 
 	}
 
-	var sheepFallsAsleep = function(sheep) {
+	function sheepFallsAsleep = function(sheep) {
 
 		//sheep that has eaten too many fruit falls asleep
 
@@ -50,19 +50,19 @@ class graphClass {
 	}
 
 
-	var wakeSheepUp = function(sheep){
+	function wakeSheepUp = function(sheep){
 
 		//sheep has woken up. play animation 
 	}
 
-	var turnSheepAround = function (sheep){
+	function turnSheepAround = function (sheep){
 
 		//sheep has spotted a wolf, it changes direction
 
 	}
 
 
-	var updateSheepEatingAnimation = function(sheep){
+	function updateSheepEatingAnimation = function(sheep){
 
 		//sheep is eating and animating
 
@@ -70,13 +70,13 @@ class graphClass {
 
 	//wolf animations
 
-	var stunWolf = function(wolf){
+	function stunWolf = function(wolf){
 
 		//wolf was hit on the head by a falling fruit
 
 	}
 
-	var destunWolf = function(wolf){
+	function destunWolf = function(wolf){
 
 		//wolf wakes up from stunned mode
 
@@ -84,7 +84,7 @@ class graphClass {
 	}
 
 
-	var beginWolfRun = function (coordinates,wolf) {
+	function beginWolfRun = function (coordinates,wolf) {
 
 		//wolf has spotted a sheep and is running towards it
 

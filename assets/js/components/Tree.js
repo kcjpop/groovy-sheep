@@ -1,30 +1,28 @@
 Crafty.c('Tree', {
 	init: function() {
 		this.addComponent('2D, Canvas');
-
 		// When the mouse is clicked on
 		this.bind('Click', function(e) {
 		});
 	},
-	createTree: function(){
+	create: function(_x,_y){
 		Crafty.sprite(271, 249, "assets/img/tree.png", {
     		gfxTree: [0,0]
 		});
 	
 		//Crafty.e('2D, Canvas, DOM, SpriteAnimation, gfxTree').attr({x:0, y:0});
-		Crafty.e("2D, DOM, SpriteAnimation, Mouse, Tween, gfxTree")
-			.attr({x:100, y:100})
-			.animate('TreeGrowth', 0, 0, 15)
+		Crafty.e("2D, DOM, SpriteAnimation, Mouse, gfxTree")
+			.attr({x:_x, y:_y})
+			.animate('TreeGrowth', 0, 0, 14)
 			.animate('TreeGrowth', 500, -1)
-			.tween({
-				alpha: 1.0,
-				x: 100,
-				y: 200
-			}, 200)
+			.attr({x: 600, y: 300})
 			.bind("Click", function(e){
-				console.log("Test");
+				this.flip("X");
+				var that = this;
+				setTimeout(function(){
+					 that.unflip("X");
+				},500);
 			});
-
 		return this;
 	}
 });
