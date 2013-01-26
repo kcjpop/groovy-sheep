@@ -158,7 +158,7 @@ _sheepGraphClass = function() {
 			}, 500);
 		}).tween({
 			x : cc.sprites[treeID].x + 50,
-			y : cc.sprites[treeID].y + 240,
+			y : cc.sprites[treeID].y + 200,
 			alpha : 1
 		}, 100);
 	}
