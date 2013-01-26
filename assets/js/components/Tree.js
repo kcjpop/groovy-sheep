@@ -1,12 +1,11 @@
 Crafty.c('Tree', {
 	init: function() {
 		this.addComponent('2D, Canvas');
-
 		// When the mouse is clicked on
 		this.bind('Click', function(e) {
 		});
 	},
-	createTree: function(){
+	create: function(){
 		Crafty.sprite(271, 249, "assets/img/tree.png", {
     		gfxTree: [0,0]
 		});
@@ -22,9 +21,12 @@ Crafty.c('Tree', {
 				y: 200
 			}, 200)
 			.bind("Click", function(e){
-				console.log("Test");
+				this.flip("X");
+				var that = this;
+				setTimeout(function(){
+					 that.unflip("X");
+				},500);
 			});
-
 		return this;
 	}
 });

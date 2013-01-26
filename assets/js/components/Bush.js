@@ -7,10 +7,21 @@ Crafty.c('Bush', {
 
 		});
 	},
-	createBush: function(color){
-		var x = Math.random() * 100 >> 0;
-      	var y = Math.random() * 100 >> 0;
-		this.attr({x: x, y: y, w: 20, h: 20}).color(color);
-      	return this;
+	create: function(color){
+		Crafty.sprite(137, 100, "assets/img/bush.png", {
+    		gfxBush: [0,0]
+		});
+	
+		Crafty.e("2D, DOM, SpriteAnimation, Mouse, gfxBush")
+			.attr({x:200, y:500})
+			.animate('BushMove', 0, 0, 4)
+			.animate('BushMove', 50, -1)
+			.bind("Click", function(e){
+				this.flip("X");
+				var that = this;
+				setTimeout(function(){
+					 that.unflip("X");
+				},500);
+			});
 	}
 });

@@ -13,6 +13,8 @@ RainbowSheep.run = function() {
 	Crafty.scene('Game', function() {
 		// Create a new map and start the game
 		Crafty.e('Map');
+		Crafty.e('Tree').create();
+		Crafty.e('Bush').create();
 		Crafty.e('Tree').createTree();
 		Crafty.e('Sheep').create().walk();
 	});
