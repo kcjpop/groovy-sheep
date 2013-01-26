@@ -9,6 +9,7 @@ _sheepGraphClass = function() {
 	cc.currentTreeId  = 100;
 	cc.currentBushId  = 200;
 	cc.currentSheepId = 300;
+
 	//Call sound functions from GraphicClass as well
 
 	//each wolf,sheep and fruit has a gobjID that they can be accessed with
@@ -95,12 +96,33 @@ _sheepGraphClass = function() {
 			x : data._x,
 			y : data._y
 		}).animate('TreeGrowth', 0, 3, 14).animate('TreeGrowth', data._growSpeed, -1).bind("Click", function(e) {
+			
+
+			//check if the tree has already yelded a fruit
+			var n =data;
+			var tree = _game.trees[data._id];
+
+			//if this tree has already yeilded fruit, dont yield another
+			//check if the fruit has already disappeared , if it has, reset the yielded field
+
+			if (tree.yieldedFruit===true) {
+
+				console.log('tree.yieldedFruit===true');
+				return false;
+			}
+
+			//flit the tree when interaction happens
+
 			this.flip("X");
 			var that = this;
 			setTimeout(function() {
 				that.unflip("X");
 			}, data._growSpeed);
+
+
 			cc.createFruitCrafty(1, data._id, data._x + 50, data._y + 130);
+
+			tree.yieldedFruit = true;
 			//this.destroy();
 			/*for(var i = 0;i<cc.treeIds.length;i++){
 			 if(cc.treeIds[i]!=id){
@@ -137,12 +159,12 @@ _sheepGraphClass = function() {
 		if(Crafty.math.randomInt(1, 2) === 1) {
 			cc.sprites[data._id].flip('X');
 			tweenSetting = {
-				x: 0,
+				x: -128,
 				y: data._y
 			};
 		} else {
 			tweenSetting = {
-				x: Crafty.viewport.width - 88,
+				x: Crafty.viewport.width,
 				y: data._y
 			};
 		}
@@ -208,6 +230,16 @@ _sheepGraphClass = function() {
 			// .animate('BushMove', 0, 0, 4)
 			// .animate('BushMove', 50, -1)
 			.bind("Click", function(e) {
+
+				var bush = _game.bushes[data._id];
+
+				//check if bush has already released a pig
+				if(bush.yieldedPig===true){
+
+					console.log('bush.yieldedPig===true');
+					return false;
+				}
+
 				this.flip("X");
 				var that = this;
 				setTimeout(function(){
@@ -221,6 +253,11 @@ _sheepGraphClass = function() {
 						_x : data._x,
 						_y : data._y + 40
 					});
+
+				//tell this bush has already yielded a sheep	
+				bush.yieldedPig=true;
+
+
 				// if(Crafty.math.randomInt(1, 2) === 1)
 				// 	cc.createSheepCrafty(cc.currentSheepId++, data._x, data._y);
 				// else

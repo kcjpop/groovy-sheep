@@ -29,18 +29,66 @@ _sheepgame = function () {
 		//display text map for debugging
 		this.showTextMap(map);
 
-		//locate bushes in map and put them into this.bushes
-
-		//locate trees in map and put them into this.trees
-
-
 		//create the graph class with crafy
 
 		this.graphClass = new _sheepGraphClass();
 
+
+		//locate bushes & trees in map and put them into this.bushes
+		var bushID = 200;
+		var treeID = 100;
+
+		//loop the map
+
+		for(i = 0, n = map.length; i < n; i++) 	{
+				for(j = 0, m = map[i].length; j < m; j++) {
+					// Create a bush
+					if(map[i][j] === 1) {
+
+						this.bushes[bushID]={};
+						this.bushes[bushID]._id = bushID;
+						
+						coord = this.graphClass.convertToPixel(i, j);
+
+						this.bushes[bushID].x = coord.x;
+						this.bushes[bushID].y = coord.y;
+
+						this.bushes[bushID].yieldedPig = false;
+
+						bushID++;
+					}
+
+					if(map[i][j] === 2) {
+
+						this.trees[treeID]={};
+						this.trees[treeID]._id = bushID;
+						
+						coord = this.graphClass.convertToPixel(i, j);
+
+						this.trees[treeID].x = coord.x;
+						this.trees[treeID].y = coord.y;
+
+						this.trees[treeID].yieldedFruit = false;
+
+						treeID++;
+					}
+
+					
+					}
+				}	//end map loop
+			
+
+
+		//locate trees in map and put them into this.trees
+
+
+		
+
 		//init the graph class
 		// An: pass the map array to draw		
 		this.graphClass.init(this.map);
+
+
 
 
 	}	//end of init
