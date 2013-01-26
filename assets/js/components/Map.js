@@ -28,7 +28,7 @@ Crafty.c('Map', {
 			return;
 		}
 		// As we are targeting iPad resolution (1024 x 768) with 64-pixel block
-		// Our map will have 1024 / 64 = 28 columns and 768 / 64 = 12 rows
+		// Our map will have 1024 / 64 = 16 columns and 768 / 64 = 12 rows
 		// 0 will be used to denoted empty blocks, 1 is for bush and 2 is for tree
 
 		var i, j, randomX, randomY,
