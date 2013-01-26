@@ -6,5 +6,13 @@ Crafty.c('Tree', {
 		this.bind('Click', function(e) {
 
 		});
+	},
+	createTree: function(){
+		Crafty.sprite(271, 249, "assets/img/tree.png", {
+    		gfxTree: [0,0]
+		});
+		
+		Crafty.e('2D, Canvas, gfxTree').attr({x:0, y:0});
+		return this;
 	}
 });
