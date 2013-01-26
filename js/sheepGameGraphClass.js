@@ -5,14 +5,15 @@ _sheepGraphClass = function() {
 	var cc = this;
 	cc.sprites = {};
 	cc.treeIds = [];
+	cc.bushIds = [];
 	//Call sound functions from GraphicClass as well
 
 	//each wolf,sheep and fruit has a gobjID that they can be accessed with
 	this.init = function(map) {
 
 		var parent = this,
-			treeID = 1,
-			bushID = 1,
+			treeID = 100,
+			bushID = 200,
 			i, j, m, n, coord;
 		//inits crafty
 		this.canvas = window.RainbowSheep || {};
@@ -32,17 +33,22 @@ _sheepGraphClass = function() {
 				for(j = 0, m = map[i].length; j < m; j++) {
 					// Create a bush
 					if(map[i][j] === 1) {
-						bushID++;
+						coord = cc.convertToPixel(i, j);
+						cc.createBushCrafty({
+							_id: bushID++,
+							_x : coord.x,
+							_y : coord.y
+						});
 					}
 
 					// Create a tree
 					if(map[i][j] === 2) {
 						coord = cc.convertToPixel(i, j);
 						cc.createTreeCrafty({
-							treeID: treeID++,
+							_id: treeID++,
 							_x: coord.x,
 							_y: coord.y,
-							growSpeed: Crafty.math.randomInt(700, 1000)
+							_growSpeed: Crafty.math.randomInt(700, 1000)
 						});
 					}
 				}
@@ -73,21 +79,21 @@ _sheepGraphClass = function() {
 	};
 
 	this.createTreeCrafty = function(data) {
-		var id = data.treeID;
+		var id = data._treeID;
 		cc.treeIds.push(id);
 		Crafty.sprite(256, 235, "assets/img/tree.png", {
 			gfxTree : [0, 0]
 		});
 		
-		cc.sprites[data.treeID] = Crafty.e("2D, DOM, SpriteAnimation, Mouse, gfxTree").attr({
+		cc.sprites[data._treeID] = Crafty.e("2D, DOM, SpriteAnimation, Mouse, gfxTree").attr({
 			x : data._x,
 			y : data._y
-		}).animate('TreeGrowth', 0, 3, 14).animate('TreeGrowth', data.growSpeed, -1).bind("Click", function(e) {
+		}).animate('TreeGrowth', 0, 3, 14).animate('TreeGrowth', data._growSpeed, -1).bind("Click", function(e) {
 			this.flip("X");
 			var that = this;
 			setTimeout(function() {
 				that.unflip("X");
-			}, data.growSpeed);
+			}, data._growSpeed);
 			cc.createFruitCrafty(1, data.treeID, data._x + 50, data._y + 130);
 			//this.destroy();
 			/*for(var i = 0;i<cc.treeIds.length;i++){
@@ -100,7 +106,6 @@ _sheepGraphClass = function() {
 		});
 
 		return this;
-
 	};
 
 	this.createSheepCrafty = function(sheepID, _x, _y) {
@@ -164,6 +169,28 @@ _sheepGraphClass = function() {
 		}, 100);
 	}
 	//end create tree
+	
+	this.createBushCrafty = function(data) {
+		Crafty.sprite(137, 100, "assets/img/bush.png", {
+    		gfxBush: [0,0]
+		});
+	
+		cc.bushIds.push(data._id);
+		cc.sprites[data._id] = Crafty.e("2D, DOM, Mouse, gfxBush")
+			.attr({
+				x: data._x,
+				y: data._y
+			})
+			// .animate('BushMove', 0, 0, 4)
+			// .animate('BushMove', 50, -1)
+			.bind("Click", function(e){
+				this.flip("X");
+				var that = this;
+				setTimeout(function(){
+					 that.unflip("X");
+				},500);
+			});
+	};
 
 	this.prime = function(map) {
 
