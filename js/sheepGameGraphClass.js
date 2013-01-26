@@ -41,7 +41,8 @@ _sheepGraphClass = function() {
 						cc.createTreeCrafty({
 							treeID: treeID++,
 							_x: coord.x,
-							_y: coord.y
+							_y: coord.y,
+							growSpeed: Crafty.math.randomInt(700, 1000)
 						});
 					}
 				}
@@ -77,16 +78,16 @@ _sheepGraphClass = function() {
 		Crafty.sprite(256, 235, "assets/img/tree.png", {
 			gfxTree : [0, 0]
 		});
-
+		
 		cc.sprites[data.treeID] = Crafty.e("2D, DOM, SpriteAnimation, Mouse, gfxTree").attr({
 			x : data._x,
 			y : data._y
-		}).animate('TreeGrowth', 0, 3, 14).animate('TreeGrowth', 500, -1).bind("Click", function(e) {
+		}).animate('TreeGrowth', 0, 3, 14).animate('TreeGrowth', data.growSpeed, -1).bind("Click", function(e) {
 			this.flip("X");
 			var that = this;
 			setTimeout(function() {
 				that.unflip("X");
-			}, 500);
+			}, data.growSpeed);
 			cc.createFruitCrafty(1, data.treeID, data._x + 50, data._y + 50);
 			//this.destroy();
 			/*for(var i = 0;i<cc.treeIds.length;i++){
