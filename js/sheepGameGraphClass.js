@@ -6,14 +6,15 @@ _sheepGraphClass = function() {
 	cc.sprites = {};
 	cc.treeIds = [];
 	cc.bushIds = [];
+	cc.currentTreeId  = 100;
+	cc.currentBushId  = 200;
+	cc.currentSheepId = 300;
 	//Call sound functions from GraphicClass as well
 
 	//each wolf,sheep and fruit has a gobjID that they can be accessed with
 	this.init = function(map) {
 
 		var parent = this,
-			treeID = 100,
-			bushID = 200,
 			i, j, m, n, coord;
 		//inits crafty
 		this.canvas = window.RainbowSheep || {};
@@ -35,9 +36,11 @@ _sheepGraphClass = function() {
 					if(map[i][j] === 1) {
 						coord = cc.convertToPixel(i, j);
 						cc.createBushCrafty({
-							_id: bushID++,
-							_x : coord.x,
-							_y : coord.y
+							_id : cc.currentBushId++,
+							_col: j,
+							_row: i,
+							_x  : coord.x,
+							_y  : coord.y
 						});
 					}
 
@@ -45,17 +48,17 @@ _sheepGraphClass = function() {
 					if(map[i][j] === 2) {
 						coord = cc.convertToPixel(i, j);
 						cc.createTreeCrafty({
-							_id: treeID++,
-							_x: coord.x,
-							_y: coord.y,
+							_id : cc.currentTreeId++,
+							_col: j,
+							_row: i,
+							_x  : coord.x,
+							_y  : coord.y,
 							_growSpeed: Crafty.math.randomInt(700, 1000)
 						});
 					}
 				}
 			}
 
-			console.log(cc.bushIds);
-			console.log(cc.treeIds);
 			// cc.createTreeCrafty(treeID, 700, 59);
 			//cc.createTreeCrafty(2, 200, 209);
 			//cc.createTreeCrafty(3, 400, 409);
@@ -155,7 +158,7 @@ _sheepGraphClass = function() {
 			gfxFruit : [0, 0]
 		});
 
-		Crafty.e("2D, DOM, Mouse, Tween, gfxFruit").attr({
+		Crafty.e("2D, Canvas, Mouse, Tween, gfxFruit").attr({
 			x : _x,
 			y : _y
 		}).bind("Click", function(e) {
@@ -178,19 +181,22 @@ _sheepGraphClass = function() {
 		});
 	
 		cc.bushIds.push(data._id);
-		cc.sprites[data._id] = Crafty.e("2D, DOM, Mouse, gfxBush")
+		cc.sprites[data._id] = Crafty.e("2D, Canvas, Mouse, gfxBush")
 			.attr({
 				x: data._x,
 				y: data._y
 			})
 			// .animate('BushMove', 0, 0, 4)
 			// .animate('BushMove', 50, -1)
-			.bind("Click", function(e){
+			.bind("Click", function(e) {
 				this.flip("X");
 				var that = this;
 				setTimeout(function(){
 					 that.unflip("X");
 				},500);
+
+				// Here come the sheep
+				cc.createSheepCrafty(cc.currentSheepId++, data._x, data._y);
 			});
 	};
 
