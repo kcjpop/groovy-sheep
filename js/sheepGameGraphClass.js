@@ -53,6 +53,9 @@ _sheepGraphClass = function() {
 					}
 				}
 			}
+
+			console.log(cc.bushIds);
+			console.log(cc.treeIds);
 			// cc.createTreeCrafty(treeID, 700, 59);
 			//cc.createTreeCrafty(2, 200, 209);
 			//cc.createTreeCrafty(3, 400, 409);
@@ -79,13 +82,12 @@ _sheepGraphClass = function() {
 	};
 
 	this.createTreeCrafty = function(data) {
-		var id = data._treeID;
-		cc.treeIds.push(id);
+		cc.treeIds.push(data._id);
 		Crafty.sprite(256, 235, "assets/img/tree.png", {
 			gfxTree : [0, 0]
 		});
 		
-		cc.sprites[data._treeID] = Crafty.e("2D, DOM, SpriteAnimation, Mouse, gfxTree").attr({
+		cc.sprites[data._id] = Crafty.e("2D, DOM, SpriteAnimation, Mouse, gfxTree").attr({
 			x : data._x,
 			y : data._y
 		}).animate('TreeGrowth', 0, 3, 14).animate('TreeGrowth', data._growSpeed, -1).bind("Click", function(e) {
