@@ -7,6 +7,7 @@ RainbowSheep.cfg = {
 
 RainbowSheep.run = function() {
 	Crafty.init(this.cfg.CANVAS_WIDTH, this.cfg.CANVAS_HEIGHT);
+	Crafty.background('#333');
 
 	// We'll make some scenes
 	Crafty.scene('Game', function() {
