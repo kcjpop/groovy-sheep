@@ -30,7 +30,7 @@ _sheepGraphClass = function() {
 			cc.createTreeCrafty(treeID, 700, 59);
 			//cc.createTreeCrafty(2, 200, 209);
 			//cc.createTreeCrafty(3, 400, 409);
-
+			cc.createSheepCrafty(1, 0, 240);
 			//setTimeout(function(){cc.deleteTreeCrafty(1)}, 2000);
 		});
 		//scenes
@@ -80,30 +80,41 @@ _sheepGraphClass = function() {
 	};
 
 	this.createSheepCrafty = function(sheepID, _x, _y) {
-		var obj = Crafty.e('gfxTree, 2D, Canvas, Fourway,SpriteAnimation, Tween, Collision, Fourway, gfxSheep')
-		.bind('Click', clickHandler)
-		.animate('SheepWalking', 0, 0, 7)
-		.animate('SheepWalking', 15, -1).attr({
-			x : 0,
-			y : 390
+		Crafty.sprite(88, 62, "assets/img/pig.png", {
+    		gfxSheep: [0,0]
 		});
 		
-		obj.collision();
+		Crafty.sprite(88, 62, "assets/img/piggy_chew.png",{
+			gfxSheepChew:[0,0]
+		});
+		
 		var that = this;
-		obj.onHit("gfxTree", function(target) {
-			that.obj.flip("X");
-			that.obj.tween({
+		
+		Crafty.e('gfxTree, 2D, Canvas, SpriteAnimation, Tween, Collision, gfxSheep')
+		.animate('SheepWalking', 0, 0, 7)
+		.animate('SheepWalking', 15, -1).attr({
+			x : _x,
+			y : _y
+		}).tween({x:_x+700,y:_y,alpha:1.0},250)
+		.collision()
+		.onHit("gfxTree", function(target) {
+			this.removeComponent('gfxSheep');
+			this.addComponent('gfxSheepChew')
+				.animate('SheepChewing', 0, 0, 7)
+				.animate('SheepChewing', 11, -1);
+			/*this.flip("X");
+			this.tween({
 				x : 0,
-				y : 400,
+				y : _y,
 				alpha : 1.0
 			}, 250).bind('TweenEnd', function() {
 				this.unflip("X");
 				this.tween({
-					x : 600,
-					y : 400,
+					x : _x+800,
+					y : _y,
 					alpha : 1.0
 				}, 250);
-			});
+			});*/
 			//that.obj.destroy();
 		});
 	}
