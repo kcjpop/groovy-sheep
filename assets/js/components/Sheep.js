@@ -33,5 +33,14 @@ Crafty.c('Sheep', {
 	},
 	eat: function() {
 		return this;
+	},
+	fallAsSleep: function() {
+
+	},
+	wakeUp: function() {
+
+	},
+	turnAround: function() {
+		
 	}
 });
