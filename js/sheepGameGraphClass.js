@@ -96,7 +96,7 @@ _sheepGraphClass = function() {
 			setTimeout(function() {
 				that.unflip("X");
 			}, data._growSpeed);
-			cc.createFruitCrafty(1, data.treeID, data._x + 50, data._y + 130);
+			cc.createFruitCrafty(1, data._id, data._x + 50, data._y + 130);
 			//this.destroy();
 			/*for(var i = 0;i<cc.treeIds.length;i++){
 			 if(cc.treeIds[i]!=id){
