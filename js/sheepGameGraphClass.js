@@ -113,7 +113,7 @@ _sheepGraphClass = function() {
 		return this;
 	};
 
-	this.createSheepCrafty = function(sheepID, _x, _y) {
+	this.createSheepCrafty = function(data) {
 		Crafty.sprite(88, 62, "assets/img/pig.png", {
     		gfxSheep: [0,0]
 		});
@@ -122,35 +122,53 @@ _sheepGraphClass = function() {
 			gfxSheepChew:[0,0]
 		});
 		
-		var that = this;
+		var that = this, tweenSetting = {};
 		
-		Crafty.e('gfxTree, 2D, Canvas, SpriteAnimation, Tween, Collision, gfxSheep')
-		.animate('SheepWalking', 0, 0, 7)
-		.animate('SheepWalking', 15, -1).attr({
-			x : _x,
-			y : _y
-		}).tween({x:_x+700,y:_y,alpha:1.0},250)
-		.collision()
-		.onHit("gfxTree", function(target) {
-			this.removeComponent('gfxSheep');
-			this.addComponent('gfxSheepChew')
-				.animate('SheepChewing', 0, 0, 7)
-				.animate('SheepChewing', 11, -1);
-			/*this.flip("X");
-			this.tween({
-				x : 0,
-				y : _y,
-				alpha : 1.0
-			}, 250).bind('TweenEnd', function() {
-				this.unflip("X");
-				this.tween({
-					x : _x+800,
-					y : _y,
-					alpha : 1.0
-				}, 250);
-			});*/
-			//that.obj.destroy();
-		});
+		cc.sprites[data._id] = Crafty.e('gfxTree, 2D, Canvas, SpriteAnimation, Tween, Collision, gfxSheep')
+			.animate('SheepWalking', 0, 0, 7)
+			.animate('SheepWalking', 15, -1)
+			.attr({
+				x : data._x,
+				y : data._y
+			});
+
+		// Does it face left, or right?
+		if(Crafty.math.randomInt(1, 2) === 1) {
+			cc.sprites[data._id].flip('X');
+			tweenSetting = {
+				x: 0,
+				y: data._y
+			};
+		} else {
+			tweenSetting = {
+				x: Crafty.viewport.width - 88,
+				y: data._y
+			};
+		}
+
+		cc.sprites[data._id]
+			.tween(tweenSetting,250);
+			// .collision()
+			// .onHit("gfxTree", function(target) {
+			// 	this.removeComponent('gfxSheep');
+			// 	this.addComponent('gfxSheepChew')
+			// 		.animate('SheepChewing', 0, 0, 7)
+			// 		.animate('SheepChewing', 11, -1);
+			// 	this.flip("X");
+			// 	this.tween({
+			// 		x : 0,
+			// 		y : _y,
+			// 		alpha : 1.0
+			// 	}, 250).bind('TweenEnd', function() {
+			// 		this.unflip("X");
+			// 		this.tween({
+			// 			x : _x+800,
+			// 			y : _y,
+			// 			alpha : 1.0
+			// 		}, 250);
+			// 	});
+			// 	// that.obj.destroy();
+			// });
 	}
 
 	this.createFruitCrafty = function(fruitID, treeID, _x, _y) {
@@ -171,7 +189,7 @@ _sheepGraphClass = function() {
 			x : cc.sprites[treeID].x + 50,
 			y : cc.sprites[treeID].y + 200,
 			alpha : 1
-		}, 100);
+		}, 70);
 	}
 	//end create tree
 	
@@ -196,7 +214,16 @@ _sheepGraphClass = function() {
 				},500);
 
 				// Here come the sheep
-				cc.createSheepCrafty(cc.currentSheepId++, data._x, data._y);
+				// Or maybe the wolf
+					cc.createSheepCrafty({
+						_id: cc.currentSheepId++,
+						_x : data._x,
+						_y : data._y + 40
+					});
+				// if(Crafty.math.randomInt(1, 2) === 1)
+				// 	cc.createSheepCrafty(cc.currentSheepId++, data._x, data._y);
+				// else
+				// 	cc.createSheepCrafty(cc.currentSheepId++, data._x, data._y);
 			});
 	};
 
