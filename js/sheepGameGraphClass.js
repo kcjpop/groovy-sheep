@@ -278,7 +278,7 @@ _sheepGraphClass = function() {
 		// Does it face left, or right?
 		if(Crafty.math.randomInt(1, 2) === 1) {
 			cc.sprites[data._id].flip('X');
-			cc.sprites[data._id].facing = 'left';
+			cc.sprites[data._id].isFacingRight = false;
 
 			tweenSetting = {
 				x: -128,
@@ -286,7 +286,7 @@ _sheepGraphClass = function() {
 			};
 
 		} else {
-			cc.sprites[data._id].facing = 'right';
+			cc.sprites[data._id].isFacingRight = true;
 
 			tweenSetting = {
 				x: Crafty.viewport.width,
@@ -302,7 +302,7 @@ _sheepGraphClass = function() {
 			for(var fruitId in fruitInView) {
 				var fruit = cc.sprites[fruitInView[fruitId]];
 				tweenSetting = {
-					x: (cc.sprites[data._id].facing === 'left') ? fruit._x - 10 : fruit._x,
+					x: (cc.sprites[data._id].isFacingRight) ? fruit._x : fruit._x - 10,
 					y: fruit._y,
 					alpha: 1.0
 				}
