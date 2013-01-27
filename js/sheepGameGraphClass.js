@@ -402,7 +402,7 @@ _sheepGraphClass = function() {
 				// Here come the sheep
 				// Or maybe the wolf
 
-				if(Crafty.math.randomInt(1, 2) === 1){
+				if(Crafty.math.randomInt(1, 10) > 3){
 					cc.createSheepCrafty({
 						_id: cc.currentSheepId++,
 						_parentBushID: data._id,
