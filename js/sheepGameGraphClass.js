@@ -65,7 +65,7 @@ _sheepGraphClass = function() {
 					}
 				}
 			}
-
+			
 			// cc.createTreeCrafty(treeID, 700, 59);
 			//cc.createTreeCrafty(2, 200, 209);
 			//cc.createTreeCrafty(3, 400, 409);
@@ -87,6 +87,13 @@ _sheepGraphClass = function() {
 
 	};
 	//end init
+	
+	this.updatePoints = function(points){
+		Crafty.e("2D, Canvas, Text").attr({ x: 768, y: 50 })
+			.textFont({ type: 'bold', family: 'Impact', size: '50px', color:'#FF0000' })
+			.textColor('#FF0000', 0.6)
+			.text(points + " points");
+	};
 	
 	this.convertToPixel = function(i, j) {
 		return {x: j * 64, y: i * 64};
@@ -256,7 +263,8 @@ _sheepGraphClass = function() {
 
 				//stop sheep motion animation tween
 				sheep.tween({x:sheep.x, y: sheep.y, alpha: 1}, 250);
-				
+				_game.points+= 500 * Math.random();
+				cc.updatePoints(_game.points);
 				//change animation: need move to somewhere else
 				sheep.removeComponent('gfxSheep').addComponent('gfxSheepChew');
 				sheep.timeout(function(){

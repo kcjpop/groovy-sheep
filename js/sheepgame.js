@@ -21,6 +21,8 @@ _sheepgame = function () {
 	cc.rainbowAnimationRunning = false;
 	cc.endOfDayAnimationRunning = false;
 
+	cc.points = 0;
+	
 	this.init = function() {
 
 		//create the map with the trees bushes and the sheephouse
@@ -92,7 +94,7 @@ _sheepgame = function () {
 		this.graphClass.init();
 
 		//run mainloop
-		// setInterval(this.mainloop,1000);
+		//setInterval(this.mainloop,1000);
 
 	}	//end of init
 
