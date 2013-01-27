@@ -9,6 +9,9 @@ _sheepGraphClass = function() {
 	cc.currentTreeId  = 100;
 	cc.currentBushId  = 200;
 	cc.currentSheepId = 300;
+	cc.currentFruitId = 400;
+	cc.sounds = {};
+
 
 	//Call sound functions from GraphicClass as well
 
@@ -55,7 +58,7 @@ _sheepGraphClass = function() {
 							_row: i,
 							_x  : coord.x,
 							_y  : coord.y,
-							_growSpeed: Crafty.math.randomInt(700, 1000)
+							_growSpeed: Crafty.math.randomInt(50, 200)
 						});
 					}
 				}
@@ -72,6 +75,12 @@ _sheepGraphClass = function() {
 		// Start the game :Ds
 		Crafty.scene('Game');
 
+		//pull some soundz
+
+		this.sounds.fruitDrop = new buzz.sound("sound/sfx_fruit_drop_1.ogg");
+
+		this.sounds.fruitFound = new buzz.sound("sound/sfx_fruit_found_1.ogg");
+
 		return;
 
 	};
@@ -79,6 +88,11 @@ _sheepGraphClass = function() {
 	
 	this.convertToPixel = function(i, j) {
 		return {x: j * 64, y: i * 64};
+	};
+
+	this.deleteObjectCrafty = function(objectID) {
+		var o = this.sprites[objectID];
+		o.destroy();
 	};
 
 	this.deleteTreeCrafty = function(treeID) {
@@ -95,7 +109,7 @@ _sheepGraphClass = function() {
 		cc.sprites[data._id] = Crafty.e("2D, DOM, SpriteAnimation, Mouse, gfxTree").attr({
 			x : data._x,
 			y : data._y
-		}).animate('TreeGrowth', 0, 3, 14).animate('TreeGrowth', data._growSpeed, -1).bind("Click", function(e) {
+		}).animate('TreeGrowth', 0, 1, 14).animate('TreeGrowth', data._growSpeed, 0).bind("Click", function(e) {
 			
 
 			//check if the tree has already yelded a fruit
@@ -111,6 +125,11 @@ _sheepGraphClass = function() {
 				return false;
 			}
 
+			//play sound
+			_game.graphClass.sounds.fruitDrop.stop();
+			_game.graphClass.sounds.fruitDrop.play();
+
+
 			//flit the tree when interaction happens
 
 			this.flip("X");
@@ -120,8 +139,9 @@ _sheepGraphClass = function() {
 			}, data._growSpeed);
 
 
-			cc.createFruitCrafty(1, data._id, data._x + 50, data._y + 130);
+			cc.createFruitCrafty(cc.currentFruitId, data._id, data._x + 50, data._y + 130);
 
+			cc.sprites[data._id].animate('TreeShrink', 14, 0, 0).animate('TreeShrink',20, 0)
 			tree.yieldedFruit = true;
 			//this.destroy();
 			/*for(var i = 0;i<cc.treeIds.length;i++){
@@ -131,6 +151,10 @@ _sheepGraphClass = function() {
 			 break;
 			 }
 			 }*/
+
+
+			 cc.currentFruitId++;
+
 		});
 
 		return this;
@@ -147,13 +171,81 @@ _sheepGraphClass = function() {
 		
 		var that = this, tweenSetting = {};
 		
-		cc.sprites[data._id] = Crafty.e('gfxTree, 2D, Canvas, SpriteAnimation, Tween, Collision, gfxSheep')
+		//lets tell sheepgame that we have a new sheep here
+
+		var d = cc.sprites;
+
+		_game.sheep[data._id]={};
+		_game.sheep[data._id].id = data._id;
+		_game.sheep[data._id].parentBushID = data._parentBushID;
+
+		cc.sprites[data._id] = Crafty.e('2D, Canvas, SpriteAnimation, Tween, Collision, gfxSheep')
 			.animate('SheepWalking', 0, 0, 7)
 			.animate('SheepWalking', 15, -1)
 			.attr({
 				x : data._x,
 				y : data._y
-			});
+			}).collision().onHit('gfxFruit',function(target){
+
+				console.log('hitting fruit with '+data._id);
+				var sheep = cc.sprites[data._id];
+
+				var targetFruit;
+
+				jQuery.each(_game.fruit,function(f,fruit){
+
+					var fy32 = fruit.y/32;
+					var sy32 = sheep.y/32;
+
+					if (fy32 === sy32) {
+
+						targetFruit = fruit;
+					}
+
+				});
+
+				//target fruit found
+
+				//play the eating sound
+
+				//set sheep to eat for a while
+
+				_game.sheep[data._id].isEating=true;
+				
+				//how long the sheep is eating and stopped
+				_game.sheep[data._id].eatingTimer = 400;
+
+				//stop sheep motion animation tween
+				sheep.stop();
+				
+				//delete the fruit sprite
+				cc.deleteObjectCrafty(targetFruit.id);
+
+				//set the fruit parent tree so it can produce more fruit
+
+				_game.trees[targetFruit.parentTreeID].yieldedFruit = false;
+
+				//grow the tree back
+				cc.sprites[targetFruit.parentTreeID].animate('TreeGrow', 0, 1, 14).animate('TreeGrow',50, 0)
+
+
+
+				//delete fruit object from sheepgame
+				delete(_game.fruit[targetFruit.id]);
+
+				return;
+				var t =1;
+				//ghetto way to find which fruit
+				//just loop all the fruit that are on the same y-location
+
+				//play sound
+
+				//remove fruito
+
+
+				//put sheep into eating mode
+
+			});;
 
 		// Does it face left, or right?
 		if(Crafty.math.randomInt(1, 2) === 1) {
@@ -199,7 +291,7 @@ _sheepGraphClass = function() {
 			gfxFruit : [0, 0]
 		});
 
-		Crafty.e("2D, Canvas, Mouse, Tween, gfxFruit").attr({
+		cc.sprites[fruitID] = Crafty.e("2D, Canvas, Mouse, Tween, Collision, gfxFruit").attr({
 			x : _x,
 			y : _y
 		}).bind("Click", function(e) {
@@ -213,6 +305,22 @@ _sheepGraphClass = function() {
 			y : cc.sprites[treeID].y + 200,
 			alpha : 1
 		}, 70);
+
+
+		//make a collision detection box for this
+
+		//Crafty.e("2D, Collision").collision(
+    	//new Crafty.polygon([50,0], [100,100], [0,100]));
+
+
+		//tell main class there's afruit here
+		_game.fruit[fruitID]={};
+		_game.fruit[fruitID].id = fruitID;
+		_game.fruit[fruitID].x = cc.sprites[treeID].x + 50;
+		_game.fruit[fruitID].y =cc.sprites[treeID].y+168;
+		_game.fruit[fruitID].parentTreeID = treeID;
+
+
 	}
 	//end create tree
 	
@@ -240,6 +348,9 @@ _sheepGraphClass = function() {
 					return false;
 				}
 
+				_game.graphClass.sounds.fruitFound.stop();
+				_game.graphClass.sounds.fruitFound.play();
+
 				this.flip("X");
 				var that = this;
 				setTimeout(function(){
@@ -248,8 +359,11 @@ _sheepGraphClass = function() {
 
 				// Here come the sheep
 				// Or maybe the wolf
+
+
 					cc.createSheepCrafty({
 						_id: cc.currentSheepId++,
+						_parentBushID: data._id,
 						_x : data._x,
 						_y : data._y + 40
 					});
@@ -263,6 +377,9 @@ _sheepGraphClass = function() {
 				// else
 				// 	cc.createSheepCrafty(cc.currentSheepId++, data._x, data._y);
 			});
+
+			
+
 	};
 
 	this.prime = function(map) {

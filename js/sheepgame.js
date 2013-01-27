@@ -18,6 +18,9 @@ _sheepgame = function () {
 
 	cc.fruitFallingSpeed = 3;
 
+	cc.rainbowAnimationRunning = false;
+	cc.endOfDayAnimationRunning = false;
+
 	this.init = function() {
 
 		//create the map with the trees bushes and the sheephouse
@@ -88,12 +91,14 @@ _sheepgame = function () {
 		// An: pass the map array to draw		
 		this.graphClass.init(this.map);
 
-
-
+		//run mainloop
+		setInterval(this.mainloop,1000);
 
 	}	//end of init
 
 	this.mainloop = function () {
+
+		var parent = _game;
 
 		if (this.rainbowAnimationRunning===true){
 
@@ -111,17 +116,17 @@ _sheepgame = function () {
 
 		//update any sheep that are currently on map
 
-		var sheep = updateSheepOnMap();
+		var sheep = parent.updateSheepOnMap();
 
 		//update fruit on map
-		var fruit = updateFruitOnMap();
+		var fruit = parent.updateFruitOnMap();
 
 		//update any wolves on map
-		var wolves = updateWolvesOnMap();
+		var wolves = parent.updateWolvesOnMap();
 
 		//redraw map
 
-		this.graphClass.redraw(sheep,fruit,wolves);
+		//this.graphClass.redraw(sheep,fruit,wolves);
 
 
 
@@ -135,11 +140,47 @@ _sheepgame = function () {
 
 		jQuery.each(this.sheep,function(k,sheep){
 
+			//pull the sprites current coordinates from gfx.sprites[id];
+			var sprite = parent.graphClass.sprites[sheep.id];
+			
+			//copy these props 
+			sheep.x = sprite.x;
+			sheep.y = sprite.y;
+
+			//if the sheep has walked over the edge, just delete the sprite
+
+			if (sheep.x < -64) {
+
+				//just get rid of the sprite here;
+
+				console.log('sheep over the edge. delete.');
+				parent.graphClass.deleteObjectCrafty(sheep.id);
+				flushSheep[sheep.id]=sheep;
+				return;
+
+			}
+
+			if (sheep.x > 1027 ) {
+
+				console.log('sheep over the edge. delete.');
+
+				//just get rid of the sprite here;
+				parent.graphClass.deleteObjectCrafty(sheep.id);
+				flushSheep[sheep.id]=sheep;
+				return;
+				
+			}
+
+
+			//also deduct tile sizes coordinates
+			sheep.xMod = sprite.x / 32;
+			sheep.yMod = sprite.y / 32;
+
 			if(sheep.isEating===true){
 
 				//if sheep is eating, it wont move for a while
 
-				sheep.eatingTimer = v.eatingTimer-1;
+				sheep.eatingTimer = sheep.eatingTimer-1;
 				
 				if (sheep.eatingTimer<1) {
 
@@ -147,8 +188,10 @@ _sheepgame = function () {
 					sheep.eatingTimer =0;
 					sheep.isEating = false;
 
+					//make the sheep walk again
+
 					//pass sheep object to graphicLibrary to start the wake up animation
-					parent.graphClass.updateSheepEatingAnimation(sheep);
+					//parent.graphClass.updateSheepEatingAnimation(sheep);
 
 					return;
 				}
@@ -264,14 +307,57 @@ _sheepgame = function () {
 		jQuery.each(flushSheep,function(s,sheep){
 
 			//remove from view
-			parent.graphClass.removeObject(sheep);
+			parent.graphClass.removeObject(sheep.id);
 
+			parent.bushes[sheep.parentBushID].yieldedPig=false;
 
-			delete(parent.sheep[sheep.sheepID]);
+			delete(parent.sheep[sheep.id]);
+			console.log('sheep '+sheep.id+' deleted from canvas and flushed. parentBush marked bush.yieldedPig===false');
 
 		});
 
 	}	//end of updateSheepOnMap
+
+	this.checkForWolfInView = function(sheep){
+
+		//checks if this sheep can see the wolf
+
+		return false;
+
+
+	};	//end checkForWolfInView
+
+	this.checkForFruitInView=function(sheep){
+
+		//checks if the sheep can see a fruit. if it can, make it walk towards the fruit
+
+		return false;
+
+	};	//end of checkForFruitInView
+
+	this.checkSheepFruitCollision = function(sheep){
+
+		//ghetto check for collisions
+
+		return false;
+
+	};	//checkSheepFruitCollision
+
+	this.sheepReachedHome = function(sheep){
+
+		//check if this sheep is home safe. happy times!
+
+		return false;
+
+	};	//end of sheepReachedHome
+
+	this.navigateTowardsExit = function(sheep){
+
+		//judge the best movement from this position to find home
+
+		return false;
+
+	};	//end of navigateTowards exit
 
 	this.updateWolvesOnMap=function(){
 
@@ -526,6 +612,18 @@ $(document).ready(function () {
 	_game = new _sheepgame();
 
 	_game.init();
+
+	//sound player buzz defaults
+
+	// Preload the sound
+	// auto, metadata, none
+	buzz.defaults.preload = 'auto';
+	// Play the sound when ready
+	// bool
+	buzz.defaults.autoplay = false;
+	// Loop the sound
+	// bool
+	buzz.defaults.loop = false;
 
 
 	});
