@@ -48,8 +48,6 @@ _sheepGraphClass = function() {
 						coord = cc.convertToPixel(i, j);
 						cc.createBushCrafty({
 							_id : cc.currentBushId++,
-							_col: j,
-							_row: i,
 							_x  : coord.x,
 							_y  : coord.y
 						});
@@ -60,8 +58,6 @@ _sheepGraphClass = function() {
 						coord = cc.convertToPixel(i, j);
 						cc.createTreeCrafty({
 							_id : cc.currentTreeId++,
-							_col: j,
-							_row: i,
 							_x  : coord.x,
 							_y  : coord.y,
 							_growSpeed: Crafty.math.randomInt(50, 200)
@@ -115,6 +111,10 @@ _sheepGraphClass = function() {
 		Crafty.sprite(256, 235, "assets/img/tree.png", {
 			gfxTree : [0, 0]
 		});
+
+		// Update map, set tree ID to the corresponding position
+		var index = this.convertToIndex(data._x, data._y);
+		_game.map[index.row][index.col] = data._id;
 		
 		cc.sprites[data._id] = Crafty.e("2D, DOM, SpriteAnimation, Mouse, gfxTree").attr({
 			x : data._x,
@@ -164,6 +164,9 @@ _sheepGraphClass = function() {
 
 
 			 cc.currentFruitId++;
+
+			 for(var i in _game.map)
+				console.log(_game.map[i]);
 
 		});
 
@@ -344,20 +347,28 @@ _sheepGraphClass = function() {
 			gfxFruit : [0, 0]
 		});
 
+		var tweenSetting = {
+			x : cc.sprites[treeID].x + 50,
+			y : cc.sprites[treeID].y + 200,
+			alpha : 1
+		};
+
 		cc.sprites[fruitID] = Crafty.e("2D, Canvas, Mouse, Tween, Collision, gfxFruit").attr({
 			x : _x,
 			y : _y
-		}).bind("Click", function(e) {
+		})
+		.bind("Click", function(e) {
 			this.flip("X");
 			var that = this;
 			setTimeout(function() {
 				that.unflip("X");
 			}, 500);
-		}).tween({
-			x : cc.sprites[treeID].x + 50,
-			y : cc.sprites[treeID].y + 200,
-			alpha : 1
-		}, 70);
+		})
+		.tween(tweenSetting, 70);
+
+		// Update fruit ID to the corresponding in map
+		var idx = this.convertToIndex(_x, _y);
+		_game.map[idx.row][idx.col] = fruitID;
 
 
 		//make a collision detection box for this
@@ -381,6 +392,10 @@ _sheepGraphClass = function() {
 		Crafty.sprite(137, 100, "assets/img/bush.png", {
     		gfxBush: [0,0]
 		});
+
+		// Update bush ID to corresponding position in map
+		var index = this.convertToIndex(data._x, data._y);
+		_game.map[index.row][index.col] = data._id;
 	
 		cc.bushIds.push(data._id);
 		cc.sprites[data._id] = Crafty.e("2D, Canvas, Mouse, gfxBush")
