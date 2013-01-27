@@ -223,7 +223,7 @@ _sheepGraphClass = function() {
 				//stop sheep motion animation tween
 				sheep.tween({x:sheep.x, y: sheep.y, alpha: 1}, 250);
 				
-				//change animation
+				//change animation: need move to somewhere else
 				sheep.removeComponent('gfxSheep').addComponent('gfxSheepChew');
 				sheep.timeout(function(){
 					cc.sprites[data._id].removeComponent('gfxSheepChew').addComponent('gfxSheep');
