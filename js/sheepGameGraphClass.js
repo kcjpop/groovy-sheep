@@ -265,18 +265,18 @@ _sheepGraphClass = function() {
 			cc.sprites[data._id].flip('X');
 			cc.sprites[data._id].facing = 'left';
 
-			tweenSetting = {
-				x: -128,
-				y: data._y
-			};
+			// tweenSetting = {
+			// 	x: -128,
+			// 	y: data._y
+			// };
 
 		} else {
 			cc.sprites[data._id].facing = 'right';
 
-			tweenSetting = {
-				x: Crafty.viewport.width,
-				y: data._y
-			};
+			// tweenSetting = {
+			// 	x: Crafty.viewport.width,
+			// 	y: data._y
+			// };
 		}
 
 		// Appear but no walking and check for wolf first
@@ -284,13 +284,20 @@ _sheepGraphClass = function() {
 		var fruitInView = _game.checkForFruitInView(cc.sprites[data._id]);
 		if(fruitInView.length > 0) {
 			// Go go, eat some fruit
-			console.log(fruitInView);
+			for(var fruitId in fruitInView) {
+				var fruit = cc.sprites[fruitInView[fruitId]];
+				tweenSetting = {
+					x: fruit._x,
+					y: fruit._y,
+					alpha: 1.0
+				}
+			}
 		}
 		// Then head to home
 		
 		
-		// cc.sprites[data._id]
-		// 	.tween(tweenSetting,250);
+		cc.sprites[data._id]
+			.tween(tweenSetting,250);
 			// .collision()
 			// .onHit("gfxTree", function(target) {
 			// 	this.removeComponent('gfxSheep');
