@@ -545,6 +545,10 @@ _sheepgame = function () {
 
 	};	//end updateFruitOnMap
 
+	this.checkWolfDroppingFruitCollision = function(wolf){
+		
+	}
+	
 	this.clickBush = function(bushID) {
 
 		//does the bush exist

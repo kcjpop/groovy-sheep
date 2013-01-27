@@ -37,7 +37,7 @@ _sheepGraphClass = function() {
 		// We'll make some scenes
 		Crafty.scene('Game', function() {
 			
-			Crafty.e('2D, DOM, Image').image('assets/img/door.png').attr({x:832,y:0});
+			//Crafty.e('2D, DOM, Image').image('assets/img/door.png').attr({x:832,y:0});
 			
 			// Create a new map and start the game
 			for(i = 0, n = map.length; i < n; i++) {
@@ -221,8 +221,15 @@ _sheepGraphClass = function() {
 				_game.sheep[data._id].eatingTimer = 400;
 
 				//stop sheep motion animation tween
-				sheep.stop();
+				sheep.tween({x:sheep.x, y: sheep.y, alpha: 1}, 250);
 				
+				//change animation
+				sheep.removeComponent('gfxSheep').addComponent('gfxSheepChew');
+				sheep.timeout(function(){
+					cc.sprites[data._id].removeComponent('gfxSheepChew').addComponent('gfxSheep');
+					cc.sprites[data._id].tween({x:Crafty.viewport.width, y:data._y, alpha: 1},250)
+				},1500);
+				//sheep.tween({x:Crafty.viewport.width, y:data._y, alpha: 1},250)
 				//delete the fruit sprite
 				cc.deleteObjectCrafty(targetFruit.id);
 
@@ -402,7 +409,7 @@ _sheepGraphClass = function() {
 				// Here come the sheep
 				// Or maybe the wolf
 
-				if(Crafty.math.randomInt(1, 2) === 1){
+				/*if(Crafty.math.randomInt(1, 2) === 1){
 					cc.createSheepCrafty({
 						_id: cc.currentSheepId++,
 						_parentBushID: data._id,
@@ -410,14 +417,21 @@ _sheepGraphClass = function() {
 						_y : data._y + 40
 					});
 				} else { // create wolf
-					cc.createWolfCrafty({
+					cc.createCrafty({
 						_id: cc.currentWolfId++,
 						_parentBushID: data._id,
 						_x : data._x,
 						_y : data._y + 40
 					});
-				}
+				}*/
 
+				cc.createSheepCrafty({
+						_id: cc.currentSheepId++,
+						_parentBushID: data._id,
+						_x : data._x,
+						_y : data._y + 40
+					});
+					
 				//tell this bush has already yielded a sheep	
 				bush.yieldedPig=true;
 
@@ -478,7 +492,8 @@ _sheepGraphClass = function() {
 	this.updateSheepEatingAnimation = function(sheep) {
 
 		//sheep is eating and animating
-
+		console.log('Sheep eating');
+		console.log(sheep);
 	}
 	//wolf animations
 
