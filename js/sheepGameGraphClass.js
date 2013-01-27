@@ -198,24 +198,32 @@ _sheepGraphClass = function() {
 			.attr({
 				x : data._x,
 				y : data._y
-			}).collision().onHit('gfxFruit',function(target){
-
+			})
+			.collision()
+			.onHit('gfxFruit',function(target) {
 				console.log('hitting fruit with '+data._id);
 				var sheep = cc.sprites[data._id];
 
 				var targetFruit;
 
-				jQuery.each(_game.fruit,function(f,fruit){
+				var idx = cc.convertToIndex(target[0].obj._x, target[0].obj._y);
+				// for(var i in _game.map)
+				// 	console.log(_game.map[i]);
 
-					var fy32 = fruit.y/32;
-					var sy32 = sheep.y/32;
+				idx = _game.map[idx.row - 1][idx.col];
+				targetFruit = _game.fruit[idx];
 
-					if (fy32 === sy32) {
+				// jQuery.each(_game.fruit,function(f,fruit){
 
-						targetFruit = fruit;
-					}
+				// 	var fy32 = fruit.y/32;
+				// 	var sy32 = sheep.y/32;
 
-				});
+				// 	if (fy32 === sy32) {
+
+				// 		targetFruit = fruit;
+				// 	}
+
+				// });
 
 				//target fruit found
 
@@ -283,11 +291,11 @@ _sheepGraphClass = function() {
 		// Then fruit
 		var fruitInView = _game.checkForFruitInView(cc.sprites[data._id]);
 		if(fruitInView.length > 0) {
-			// Go go, eat some fruit
+			// Go go, eat some fruits
 			for(var fruitId in fruitInView) {
 				var fruit = cc.sprites[fruitInView[fruitId]];
 				tweenSetting = {
-					x: fruit._x,
+					x: (cc.sprites[data._id].facing === 'left') ? fruit._x - 10 : fruit._x,
 					y: fruit._y,
 					alpha: 1.0
 				}
@@ -297,7 +305,7 @@ _sheepGraphClass = function() {
 		
 		
 		cc.sprites[data._id]
-			.tween(tweenSetting,250);
+			.tween(tweenSetting, 250);
 			// .collision()
 			// .onHit("gfxTree", function(target) {
 			// 	this.removeComponent('gfxSheep');
