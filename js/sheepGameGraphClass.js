@@ -272,18 +272,18 @@ _sheepGraphClass = function() {
 			cc.sprites[data._id].flip('X');
 			cc.sprites[data._id].facing = 'left';
 
-			// tweenSetting = {
-			// 	x: -128,
-			// 	y: data._y
-			// };
+			tweenSetting = {
+				x: -128,
+				y: data._y
+			};
 
 		} else {
 			cc.sprites[data._id].facing = 'right';
 
-			// tweenSetting = {
-			// 	x: Crafty.viewport.width,
-			// 	y: data._y
-			// };
+			tweenSetting = {
+				x: Crafty.viewport.width,
+				y: data._y
+			};
 		}
 
 		// Appear but no walking and check for wolf first
@@ -458,13 +458,13 @@ _sheepGraphClass = function() {
 						_y : data._y + 40
 					});
 				} else { // create wolf
-					cc.createCrafty({
+					cc.createWolfCrafty({
 						_id: cc.currentWolfId++,
 						_parentBushID: data._id,
 						_x : data._x,
 						_y : data._y + 40
 					});
-				}*/
+				}
 
 				/*cc.createSheepCrafty({
 						_id: cc.currentSheepId++,
