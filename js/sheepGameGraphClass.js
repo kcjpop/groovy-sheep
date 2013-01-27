@@ -10,6 +10,7 @@ _sheepGraphClass = function() {
 	cc.currentBushId  = 200;
 	cc.currentSheepId = 300;
 	cc.currentFruitId = 400;
+	cc.currentWolfId  = 500;
 	cc.sounds = {};
 
 
@@ -286,6 +287,43 @@ _sheepGraphClass = function() {
 			// });
 	}
 
+	this.createWolfCrafty = function(data){
+		Crafty.sprite(153, 139, "assets/img/fox.png", {
+    		gfxWolf: [0,0]
+		});
+		
+		_game.wolves[data._id]={};
+		_game.wolves[data._id].id = data._id;
+		_game.wolves[data._id].parentBushID = data._parentBushID;
+
+
+		cc.sprites[data._id] = Crafty.e('2D, Canvas, SpriteAnimation, Tween, Collision, gfxWolf')
+			.animate('WolfRunning', 0, 0, 5)
+			.animate('WolfRunning', 15, -1)
+			.attr({
+				x : data._x,
+				y : data._y - 77
+			}).collision().onHit('gfxFruit',function(target){
+				
+			});
+			
+		if(Crafty.math.randomInt(1, 2) === 1) {
+			tweenSetting = {
+				x: -128,
+				y: data._y
+			};
+		} else {
+			cc.sprites[data._id].flip('X');
+			tweenSetting = {
+				x: Crafty.viewport.width,
+				y: data._y
+			};
+		}
+
+		cc.sprites[data._id]
+			.tween(tweenSetting,250);
+	}
+	
 	this.createFruitCrafty = function(fruitID, treeID, _x, _y) {
 		Crafty.sprite(32, "assets/img/apple.png", {
 			gfxFruit : [0, 0]
@@ -360,13 +398,21 @@ _sheepGraphClass = function() {
 				// Here come the sheep
 				// Or maybe the wolf
 
-
+				if(Crafty.math.randomInt(1, 2) === 1){
 					cc.createSheepCrafty({
 						_id: cc.currentSheepId++,
 						_parentBushID: data._id,
 						_x : data._x,
 						_y : data._y + 40
 					});
+				} else { // create wolf
+					cc.createWolfCrafty({
+						_id: cc.currentWolfId++,
+						_parentBushID: data._id,
+						_x : data._x,
+						_y : data._y + 40
+					});
+				}
 
 				//tell this bush has already yielded a sheep	
 				bush.yieldedPig=true;

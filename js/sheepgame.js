@@ -6,7 +6,7 @@ _sheepgame = function () {
     var cc = this;
 	cc.sheepEatingTimerDefault = 4000; //sheep eats for 4000 microseconds
 
-	cc.volves = {};
+	cc.wolves = {};
 	cc.sheep = {};
 	cc.fruit = {};
 	cc.bushes = {};
@@ -368,7 +368,36 @@ _sheepgame = function () {
 		var flushWolves = {};
 
 		jQuery.each(this.wolves,function(k,wolf){
+			var sprite = parent.graphClass.sprites[wolf.id];
+			
+			//copy these props 
+			wolf.x = sprite.x;
+			wolf.y = sprite.y;
 
+			//if the sheep has walked over the edge, just delete the sprite
+
+			if (wolf.x < -64) {
+
+				//just get rid of the sprite here;
+
+				console.log('wolf over the edge. delete.');
+				parent.graphClass.deleteObjectCrafty(wolf.id);
+				flushWolves[wolf.id]=wolf;
+				return;
+
+			}
+
+			if (wolf.x > 1027 ) {
+
+				console.log('wolf over the edge. delete.');
+
+				//just get rid of the sprite here;
+				parent.graphClass.deleteObjectCrafty(sheep.id);
+				flushWolves[wolf.id]=wolf;
+				return;
+				
+			}
+			
 			//check wolf fruit collision
 
 			var fruit = parent.checkWolfDroppingFruitCollision(wolf);
