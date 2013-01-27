@@ -165,15 +165,13 @@ _sheepGraphClass = function() {
 			}, data._growSpeed);
 
 
-			var fruit = cc.createFruitCrafty(cc.currentFruitId, data._id, data._x + 50, data._y + 130);
+			cc.createFruitCrafty(cc.currentFruitId, data._id, data._x + 50, data._y + 130);
 
 			cc.sprites[data._id].animate('TreeShrink', 14, 0, 0).animate('TreeShrink',20, 0)
 			tree.yieldedFruit = true;
 
-			console.log('FruitFallingRow' + (index.row + 2));
-			Crafty.trigger('FruitFallingRow' + (index.row + 2), {
-				data: fruit
-			});
+			console.log('Tree', 'FruitFallingRow' + (index.row + 2));
+			Crafty.trigger('FruitFallingRow' + (index.row + 2), cc.sprites[cc.currentFruitId]);
 			//this.destroy();
 			/*for(var i = 0;i<cc.treeIds.length;i++){
 			 if(cc.treeIds[i]!=id){
@@ -208,7 +206,6 @@ _sheepGraphClass = function() {
 		//lets tell sheepgame that we have a new sheep here
 
 		var d = cc.sprites;
-		console.log('FruitFallingRow'+Math.floor(data._x/64));
 
 		_game.sheep[data._id]={};
 		_game.sheep[data._id].id = data._id;
@@ -220,9 +217,6 @@ _sheepGraphClass = function() {
 			.attr({
 				x : data._x,
 				y : data._y
-			})
-			.bind('FruitFallingRow'+Math.floor(data._x/64), function(e) {
-				console.log(e);
 			})
 			.collision()
 			.onHit('gfxFruit',function(target) {
@@ -341,6 +335,19 @@ _sheepGraphClass = function() {
 		}
 		// Then head to home
 		
+		console.log('Pig', 'FruitFallingRow'+Math.floor(data._y/64));
+		cc.sprites[data._id]
+			.bind('FruitFallingRow'+Math.floor(data._y/64), function(fruit) {
+				var _sheep = cc.sprites[data._id];
+				if(_sheep._x > fruit._x) {
+					_sheep.flip('X');
+				}
+
+				_sheep.tween({
+					x: fruit._x - 20,
+					y: fruit._y + 40
+				}, 250);
+			})
 		
 		cc.sprites[data._id]
 			.tween(tweenSetting, 250);
@@ -445,8 +452,6 @@ _sheepGraphClass = function() {
 		_game.fruit[fruitID].x = cc.sprites[treeID].x + 50;
 		_game.fruit[fruitID].y =cc.sprites[treeID].y+168;
 		_game.fruit[fruitID].parentTreeID = treeID;
-
-
 	}
 	//end create tree
 	
