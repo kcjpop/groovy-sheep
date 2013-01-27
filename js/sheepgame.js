@@ -329,10 +329,22 @@ _sheepgame = function () {
 
 	this.checkForFruitInView=function(sheep){
 		//checks if the sheep can see a fruit. if it can, make it walk towards the fruit
-		var index = cc.graphClass.convertToIndex(sheep._x, sheep._y);
+		var index = cc.graphClass.convertToIndex(sheep._x, sheep._y),
+			i, n, fruitIds = [];
 		// Browse through all fruits in the same row
-		
-		return false;
+		if(sheep.facing === 'left') {
+			for(i = index.col, n = 0; i > n; i--) {
+				if(_game.map[index.row][i] >= 400 && _game.map[index.row][i] < 500)
+					fruitIds.push(_game.map[index.row][i]);
+			}
+		} else if(sheep.facing === 'right') {
+			for(i = index.col, n = Crafty.viewport.width / 64; i < n; i++) {
+				if(_game.map[index.row][i] >= 400 && _game.map[index.row][i] < 500)
+					fruitIds.push(_game.map[index.row][i]);
+			}
+		}
+
+		return fruitIds;
 
 	};	//end of checkForFruitInView
 

@@ -165,8 +165,8 @@ _sheepGraphClass = function() {
 
 			 cc.currentFruitId++;
 
-			 for(var i in _game.map)
-				console.log(_game.map[i]);
+			 // for(var i in _game.map)
+				// console.log(_game.map[i]);
 
 		});
 
@@ -263,11 +263,16 @@ _sheepGraphClass = function() {
 		// Does it face left, or right?
 		if(Crafty.math.randomInt(1, 2) === 1) {
 			cc.sprites[data._id].flip('X');
+			cc.sprites[data._id].facing = 'left';
+
 			tweenSetting = {
 				x: -128,
 				y: data._y
 			};
+
 		} else {
+			cc.sprites[data._id].facing = 'right';
+
 			tweenSetting = {
 				x: Crafty.viewport.width,
 				y: data._y
@@ -276,7 +281,11 @@ _sheepGraphClass = function() {
 
 		// Appear but no walking and check for wolf first
 		// Then fruit
-		_game.checkForFruitInView(cc.sprites[data._id]);
+		var fruitInView = _game.checkForFruitInView(cc.sprites[data._id]);
+		if(fruitInView.length > 0) {
+			// Go go, eat some fruit
+			console.log(fruitInView);
+		}
 		// Then head to home
 		
 		
