@@ -12,7 +12,7 @@ _sheepGraphClass = function() {
 	cc.currentFruitId = 400;
 	cc.currentWolfId  = 500;
 	cc.sounds = {};
-
+	cc.pointText = null;
 
 	//Call sound functions from GraphicClass as well
 
@@ -89,10 +89,14 @@ _sheepGraphClass = function() {
 	//end init
 	
 	this.updatePoints = function(points){
-		Crafty.e("2D, Canvas, Text").attr({ x: 768, y: 50 })
-			.textFont({ type: 'bold', family: 'Impact', size: '50px', color:'#FF0000' })
-			.textColor('#FF0000', 0.6)
-			.text(points + " points");
+		if(cc.pointText != null){
+			cc.pointText.destroy();
+		} 
+		
+		cc.pointText  = Crafty.e("2D, Canvas, Text").attr({ x: 768, y: 50 })
+				.textFont({ type: 'bold', family: 'Impact', size: '50px', color:'#FF0000' })
+				.textColor('#E6F8F3', 0.6)
+				.text(points + " points");
 	};
 	
 	this.convertToPixel = function(i, j) {
@@ -257,7 +261,7 @@ _sheepGraphClass = function() {
 
 				//stop sheep motion animation tween
 				sheep.tween({x:sheep.x, y: sheep.y, alpha: 1}, 250);
-				_game.points+= 500 * Math.random();
+				_game.points+= Math.round(500 * Math.random());
 				cc.updatePoints(_game.points);
 				//change animation: need move to somewhere else
 				sheep.removeComponent('gfxSheep').addComponent('gfxSheepChew');
@@ -342,7 +346,7 @@ _sheepGraphClass = function() {
 				if(_sheep._x > fruit._x) {
 					_sheep.flip('X');
 				}
-
+				
 				_sheep.tween({
 					x: fruit._x - 20,
 					y: fruit._y + 40
