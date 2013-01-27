@@ -89,10 +89,10 @@ _sheepgame = function () {
 
 		//init the graph class
 		// An: pass the map array to draw		
-		this.graphClass.init(this.map);
+		this.graphClass.init();
 
 		//run mainloop
-		setInterval(this.mainloop,1000);
+		// setInterval(this.mainloop,1000);
 
 	}	//end of init
 
@@ -328,10 +328,23 @@ _sheepgame = function () {
 	};	//end checkForWolfInView
 
 	this.checkForFruitInView=function(sheep){
-
 		//checks if the sheep can see a fruit. if it can, make it walk towards the fruit
+		var index = cc.graphClass.convertToIndex(sheep._x, sheep._y),
+			i, n, fruitIds = [];
+		// Browse through all fruits in the same row
+		if(sheep.facing === 'left') {
+			for(i = index.col, n = 0; i > n; i--) {
+				if(_game.map[index.row][i] >= 400 && _game.map[index.row][i] < 500)
+					fruitIds.push(_game.map[index.row][i]);
+			}
+		} else if(sheep.facing === 'right') {
+			for(i = index.col, n = Crafty.viewport.width / 64; i < n; i++) {
+				if(_game.map[index.row][i] >= 400 && _game.map[index.row][i] < 500)
+					fruitIds.push(_game.map[index.row][i]);
+			}
+		}
 
-		return false;
+		return fruitIds;
 
 	};	//end of checkForFruitInView
 
@@ -585,11 +598,11 @@ _sheepgame = function () {
 
 		var map = [
 			[0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 2, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0],
 			[0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],

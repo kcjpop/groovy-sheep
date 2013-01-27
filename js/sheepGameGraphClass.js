@@ -17,9 +17,10 @@ _sheepGraphClass = function() {
 	//Call sound functions from GraphicClass as well
 
 	//each wolf,sheep and fruit has a gobjID that they can be accessed with
-	this.init = function(map) {
+	this.init = function() {
 
 		var parent = this,
+			map = _game.map,
 			i, j, m, n, coord;
 		//inits crafty
 		this.canvas = window.RainbowSheep || {};
@@ -47,8 +48,6 @@ _sheepGraphClass = function() {
 						coord = cc.convertToPixel(i, j);
 						cc.createBushCrafty({
 							_id : cc.currentBushId++,
-							_col: j,
-							_row: i,
 							_x  : coord.x,
 							_y  : coord.y
 						});
@@ -59,8 +58,6 @@ _sheepGraphClass = function() {
 						coord = cc.convertToPixel(i, j);
 						cc.createTreeCrafty({
 							_id : cc.currentTreeId++,
-							_col: j,
-							_row: i,
 							_x  : coord.x,
 							_y  : coord.y,
 							_growSpeed: Crafty.math.randomInt(50, 200)
@@ -95,6 +92,10 @@ _sheepGraphClass = function() {
 		return {x: j * 64, y: i * 64};
 	};
 
+	this.convertToIndex = function(x, y) {
+		return {col: Math.floor(x / 64), row: Math.floor(y / 64)};
+	}
+
 	this.deleteObjectCrafty = function(objectID) {
 		var o = this.sprites[objectID];
 		o.destroy();
@@ -110,6 +111,10 @@ _sheepGraphClass = function() {
 		Crafty.sprite(256, 235, "assets/img/tree.png", {
 			gfxTree : [0, 0]
 		});
+
+		// Update map, set tree ID to the corresponding position
+		var index = this.convertToIndex(data._x, data._y);
+		_game.map[index.row][index.col] = data._id;
 		
 		cc.sprites[data._id] = Crafty.e("2D, DOM, SpriteAnimation, Mouse, gfxTree").attr({
 			x : data._x,
@@ -159,6 +164,9 @@ _sheepGraphClass = function() {
 
 
 			 cc.currentFruitId++;
+
+			 // for(var i in _game.map)
+				// console.log(_game.map[i]);
 
 		});
 
@@ -262,17 +270,39 @@ _sheepGraphClass = function() {
 		// Does it face left, or right?
 		if(Crafty.math.randomInt(1, 2) === 1) {
 			cc.sprites[data._id].flip('X');
-			tweenSetting = {
-				x: -128,
-				y: data._y
-			};
+			cc.sprites[data._id].facing = 'left';
+
+			// tweenSetting = {
+			// 	x: -128,
+			// 	y: data._y
+			// };
+
 		} else {
-			tweenSetting = {
-				x: Crafty.viewport.width,
-				y: data._y
-			};
+			cc.sprites[data._id].facing = 'right';
+
+			// tweenSetting = {
+			// 	x: Crafty.viewport.width,
+			// 	y: data._y
+			// };
 		}
 
+		// Appear but no walking and check for wolf first
+		// Then fruit
+		var fruitInView = _game.checkForFruitInView(cc.sprites[data._id]);
+		if(fruitInView.length > 0) {
+			// Go go, eat some fruit
+			for(var fruitId in fruitInView) {
+				var fruit = cc.sprites[fruitInView[fruitId]];
+				tweenSetting = {
+					x: fruit._x,
+					y: fruit._y,
+					alpha: 1.0
+				}
+			}
+		}
+		// Then head to home
+		
+		
 		cc.sprites[data._id]
 			.tween(tweenSetting,250);
 			// .collision()
@@ -340,20 +370,28 @@ _sheepGraphClass = function() {
 			gfxFruit : [0, 0]
 		});
 
+		var tweenSetting = {
+			x : cc.sprites[treeID].x + 50,
+			y : cc.sprites[treeID].y + 200,
+			alpha : 1
+		};
+
 		cc.sprites[fruitID] = Crafty.e("2D, Canvas, Mouse, Tween, Collision, gfxFruit").attr({
 			x : _x,
 			y : _y
-		}).bind("Click", function(e) {
+		})
+		.bind("Click", function(e) {
 			this.flip("X");
 			var that = this;
 			setTimeout(function() {
 				that.unflip("X");
 			}, 500);
-		}).tween({
-			x : cc.sprites[treeID].x + 50,
-			y : cc.sprites[treeID].y + 200,
-			alpha : 1
-		}, 70);
+		})
+		.tween(tweenSetting, 70);
+
+		// Update fruit ID to the corresponding in map
+		var idx = this.convertToIndex(_x, _y);
+		_game.map[idx.row][idx.col] = fruitID;
 
 
 		//make a collision detection box for this
@@ -377,6 +415,10 @@ _sheepGraphClass = function() {
 		Crafty.sprite(137, 100, "assets/img/bush.png", {
     		gfxBush: [0,0]
 		});
+
+		// Update bush ID to corresponding position in map
+		var index = this.convertToIndex(data._x, data._y);
+		_game.map[index.row][index.col] = data._id;
 	
 		cc.bushIds.push(data._id);
 		cc.sprites[data._id] = Crafty.e("2D, Canvas, Mouse, gfxBush")
@@ -408,8 +450,7 @@ _sheepGraphClass = function() {
 
 				// Here come the sheep
 				// Or maybe the wolf
-
-				/*if(Crafty.math.randomInt(1, 2) === 1){
+				if(Crafty.math.randomInt(1, 10) > 3){
 					cc.createSheepCrafty({
 						_id: cc.currentSheepId++,
 						_parentBushID: data._id,
@@ -425,12 +466,12 @@ _sheepGraphClass = function() {
 					});
 				}*/
 
-				cc.createSheepCrafty({
+				/*cc.createSheepCrafty({
 						_id: cc.currentSheepId++,
 						_parentBushID: data._id,
 						_x : data._x,
 						_y : data._y + 40
-					});
+					});*/
 					
 				//tell this bush has already yielded a sheep	
 				bush.yieldedPig=true;
