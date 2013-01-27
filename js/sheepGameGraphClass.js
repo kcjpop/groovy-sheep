@@ -255,7 +255,12 @@ _sheepGraphClass = function() {
 				sheep.removeComponent('gfxSheep').addComponent('gfxSheepChew');
 				sheep.timeout(function(){
 					cc.sprites[data._id].removeComponent('gfxSheepChew').addComponent('gfxSheep');
-					cc.sprites[data._id].tween({x:Crafty.viewport.width, y:data._y, alpha: 1},250)
+					
+					if(cc.sprites[data._id].isFacingRight){
+						cc.sprites[data._id].tween({x:Crafty.viewport.width, y:data._y, alpha: 1},250);
+					} else {
+						cc.sprites[data._id].tween({x:-128, y:data._y, alpha: 1},250);
+					}
 				},1500);
 				//sheep.tween({x:Crafty.viewport.width, y:data._y, alpha: 1},250)
 				//delete the fruit sprite
@@ -384,13 +389,13 @@ _sheepGraphClass = function() {
 		if(Crafty.math.randomInt(1, 2) === 1) {
 			tweenSetting = {
 				x: -128,
-				y: data._y
+				y: data._y -77
 			};
 		} else {
 			cc.sprites[data._id].flip('X');
 			tweenSetting = {
 				x: Crafty.viewport.width,
-				y: data._y
+				y: data._y - 77
 			};
 		}
 
