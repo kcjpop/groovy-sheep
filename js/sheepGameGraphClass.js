@@ -17,9 +17,10 @@ _sheepGraphClass = function() {
 	//Call sound functions from GraphicClass as well
 
 	//each wolf,sheep and fruit has a gobjID that they can be accessed with
-	this.init = function(map) {
+	this.init = function() {
 
 		var parent = this,
+			map = _game.map,
 			i, j, m, n, coord;
 		//inits crafty
 		this.canvas = window.RainbowSheep || {};
@@ -94,6 +95,10 @@ _sheepGraphClass = function() {
 	this.convertToPixel = function(i, j) {
 		return {x: j * 64, y: i * 64};
 	};
+
+	this.convertToIndex = function(x, y) {
+		return {col: Math.floor(x / 64), row: Math.floor(y / 64)};
+	}
 
 	this.deleteObjectCrafty = function(objectID) {
 		var o = this.sprites[objectID];
@@ -266,8 +271,14 @@ _sheepGraphClass = function() {
 			};
 		}
 
-		cc.sprites[data._id]
-			.tween(tweenSetting,250);
+		// Appear but no walking and check for wolf first
+		// Then fruit
+		_game.checkForFruitInView(cc.sprites[data._id]);
+		// Then head to home
+		
+		
+		// cc.sprites[data._id]
+		// 	.tween(tweenSetting,250);
 			// .collision()
 			// .onHit("gfxTree", function(target) {
 			// 	this.removeComponent('gfxSheep');

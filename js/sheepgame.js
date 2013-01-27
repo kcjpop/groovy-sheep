@@ -89,10 +89,10 @@ _sheepgame = function () {
 
 		//init the graph class
 		// An: pass the map array to draw		
-		this.graphClass.init(this.map);
+		this.graphClass.init();
 
 		//run mainloop
-		setInterval(this.mainloop,1000);
+		// setInterval(this.mainloop,1000);
 
 	}	//end of init
 
@@ -328,9 +328,10 @@ _sheepgame = function () {
 	};	//end checkForWolfInView
 
 	this.checkForFruitInView=function(sheep){
-
 		//checks if the sheep can see a fruit. if it can, make it walk towards the fruit
-
+		var index = cc.graphClass.convertToIndex(sheep._x, sheep._y);
+		// Browse through all fruits in the same row
+		
 		return false;
 
 	};	//end of checkForFruitInView
