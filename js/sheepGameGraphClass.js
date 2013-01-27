@@ -93,7 +93,16 @@ _sheepGraphClass = function() {
 	};
 
 	this.convertToIndex = function(x, y) {
-		return {col: Math.floor(x / 64), row: Math.floor(y / 64)};
+		var tmp;
+		// return {
+		// 	col: (tmp = Math.floor(x / 64)) > 0 ? tmp - 1 : tmp,
+		// 	row: (tmp = Math.floor(x / 64)) > 0 ? tmp - 1 : tmp,
+		// };
+
+		return {
+			col: Math.floor(x / 64),
+			row: Math.floor(y / 64)
+		};
 	}
 
 	this.deleteObjectCrafty = function(objectID) {
@@ -149,10 +158,15 @@ _sheepGraphClass = function() {
 			}, data._growSpeed);
 
 
-			cc.createFruitCrafty(cc.currentFruitId, data._id, data._x + 50, data._y + 130);
+			var fruit = cc.createFruitCrafty(cc.currentFruitId, data._id, data._x + 50, data._y + 130);
 
 			cc.sprites[data._id].animate('TreeShrink', 14, 0, 0).animate('TreeShrink',20, 0)
 			tree.yieldedFruit = true;
+
+			console.log('FruitFallingRow' + (index.row + 2));
+			Crafty.trigger('FruitFallingRow' + (index.row + 2), {
+				data: fruit
+			});
 			//this.destroy();
 			/*for(var i = 0;i<cc.treeIds.length;i++){
 			 if(cc.treeIds[i]!=id){
@@ -187,6 +201,7 @@ _sheepGraphClass = function() {
 		//lets tell sheepgame that we have a new sheep here
 
 		var d = cc.sprites;
+		console.log('FruitFallingRow'+Math.floor(data._x/64));
 
 		_game.sheep[data._id]={};
 		_game.sheep[data._id].id = data._id;
@@ -198,6 +213,9 @@ _sheepGraphClass = function() {
 			.attr({
 				x : data._x,
 				y : data._y
+			})
+			.bind('FruitFallingRow'+Math.floor(data._x/64), function(e) {
+				console.log(e);
 			})
 			.collision()
 			.onHit('gfxFruit',function(target) {
