@@ -32,9 +32,13 @@ _sheepGraphClass = function() {
 		Crafty.init(this.canvas.cfg.CANVAS_WIDTH, this.canvas.cfg.CANVAS_HEIGHT);
 		// Crafty.background('url(assets/img/grid.png)');
 		Crafty.background('url(assets/img/bg.jpg)');
-
+		
+		
 		// We'll make some scenes
 		Crafty.scene('Game', function() {
+			
+			Crafty.e('2D, DOM, Image').image('assets/img/door.png').attr({x:832,y:0});
+			
 			// Create a new map and start the game
 			for(i = 0, n = map.length; i < n; i++) {
 				for(j = 0, m = map[i].length; j < m; j++) {
